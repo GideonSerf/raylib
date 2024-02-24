@@ -49,7 +49,7 @@
 **********************************************************************************************/
 
 #include "SDL.h"                // SDL base library (window/rendered, input, timing... functionality)
-
+#include "SDL_joystick.h"
 #if defined(GRAPHICS_API_OPENGL_ES2)
     // It seems it does not need to be included to work
     //#include "SDL_opengles2.h"
@@ -939,11 +939,17 @@ int SetGamepadMappings(const char *mappings)
 }
 
 // Set gamepad vibration
-void SetGamepadVibration(int gamepad, float leftMotor, float rightMotor, float durationMs)
+void SetGamepadVibration(int gamepad, float leftMotor, float rightMotor)
 {
+    CORE.Input.Gamepad.leftMotor[gamepad] = MAX(0.0f, leftMotor);
+    CORE.Input.Gamepad.rightMotor[gamepad] = MAX(0.0f, rightMotor);
+
+    CORE.Input.Gamepad.leftMotor[gamepad] = MIN(1.0f, leftMotor);
+    CORE.Input.Gamepad.rightMotor[gamepad] = MIN(1.0f, rightMotor);
+
     if (IsGamepadAvailable(gamepad))
     {
-        SDL_JoystickRumble(platform.gamepad[gamepad], (Uint16)(leftMotor*0xFFFF), (Uint16)(rightMotor*0xFFFF), durationMs);
+        SDL_JoystickRumble(platform.gamepad[gamepad], (Uint16)(CORE.Input.Gamepad.leftMotor[gamepad] * 65535.0f), (Uint16)(CORE.Input.Gamepad.rightMotor[gamepad] * 65535.0f), 0xFFFF);
     }
 }
 
@@ -997,6 +1003,9 @@ void PollInputEvents(void)
             {
                 CORE.Input.Gamepad.previousButtonState[i][k] = CORE.Input.Gamepad.currentButtonState[i][k];
             }
+            // Resend vibration if rumble is active
+            if(CORE.Input.Gamepad.leftMotor[i]|| CORE.Input.Gamepad.leftMotor[i])
+                SDL_JoystickRumble(platform.gamepad[i], (Uint16)(CORE.Input.Gamepad.leftMotor[i] * 65535.0f), (Uint16)(CORE.Input.Gamepad.rightMotor[gamepad] * 65535.0f), 0xFFFF);
         }
     }
 
