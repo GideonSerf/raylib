@@ -941,11 +941,12 @@ int SetGamepadMappings(const char *mappings)
 // Set gamepad vibration
 void SetGamepadVibration(int gamepad, float leftMotor, float rightMotor)
 {
-    CORE.Input.Gamepad.leftMotor[gamepad] = MAX(0.0f, leftMotor);
-    CORE.Input.Gamepad.rightMotor[gamepad] = MAX(0.0f, rightMotor);
 
-    CORE.Input.Gamepad.leftMotor[gamepad] = MIN(1.0f, leftMotor);
-    CORE.Input.Gamepad.rightMotor[gamepad] = MIN(1.0f, rightMotor);
+    CORE.Input.Gamepad.leftMotor[gamepad] = (0.0f > leftMotor) ? 0.0f : leftMotor;
+    CORE.Input.Gamepad.rightMotor[gamepad] = (0.0f > rightMotor) ? 0.0f : rightMotor;
+
+    CORE.Input.Gamepad.leftMotor[gamepad] = (((1.0f) < (CORE.Input.Gamepad.leftMotor[gamepad])) ? (1.0f) : (CORE.Input.Gamepad.leftMotor[gamepad]));
+    CORE.Input.Gamepad.rightMotor[gamepad] = (((1.0f) < (CORE.Input.Gamepad.rightMotor[gamepad])) ? (1.0f) : (CORE.Input.Gamepad.rightMotor[gamepad]));
 
     if (IsGamepadAvailable(gamepad))
     {
@@ -1005,7 +1006,7 @@ void PollInputEvents(void)
             }
             // Resend vibration if rumble is active
             if(CORE.Input.Gamepad.leftMotor[i]|| CORE.Input.Gamepad.leftMotor[i])
-                SDL_JoystickRumble(platform.gamepad[i], (Uint16)(CORE.Input.Gamepad.leftMotor[i] * 65535.0f), (Uint16)(CORE.Input.Gamepad.rightMotor[gamepad] * 65535.0f), 0xFFFF);
+                SDL_JoystickRumble(platform.gamepad[i], (Uint16)(CORE.Input.Gamepad.leftMotor[i] * 65535.0f), (Uint16)(CORE.Input.Gamepad.rightMotor[i] * 65535.0f), 0xFFFF);
         }
     }
 

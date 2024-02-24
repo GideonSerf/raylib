@@ -334,7 +334,8 @@ typedef struct CoreData {
             char currentButtonState[MAX_GAMEPADS][MAX_GAMEPAD_BUTTONS];     // Current gamepad buttons state
             char previousButtonState[MAX_GAMEPADS][MAX_GAMEPAD_BUTTONS];    // Previous gamepad buttons state
             float axisState[MAX_GAMEPADS][MAX_GAMEPAD_AXIS];                // Gamepad axis state
-
+            float rightMotor[MAX_GAMEPADS];
+            float leftMotor[MAX_GAMEPADS];
         } Gamepad;
     } Input;
     struct {
